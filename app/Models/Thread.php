@@ -147,13 +147,13 @@ class Thread extends Model implements ReplyAble
             $join->on('threads.id', 'replies.replyable_id')
                     ->where('replies.replyable_type', static::TABLE);
         })
+            ->groupBy('threads.id', 'threads.author_id', 'threads.subject', 'threads.body', 'threads.slug', 'threads.created_at', 'threads.updated_at', 'threads.solution_reply_id', 'threads.ip')
             ->orderBy('latest_creation', 'DESC')
-            ->groupBy('threads.id')
             ->select('threads.*', DB::raw('
                 CASE WHEN COALESCE(MAX(replies.created_at), 0) > threads.created_at
                 THEN COALESCE(MAX(replies.created_at), 0)
                 ELSE threads.created_at
                 END AS latest_creation
-            '));
+            ')); 
     }
 }

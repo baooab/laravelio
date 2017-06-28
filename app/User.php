@@ -6,6 +6,8 @@ use App\Models\Reply;
 use App\Models\Thread;
 use App\Helpers\ModelHelpers;
 use App\Helpers\HasTimestamps;
+use App\Mail\ResetPasswordNotification;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -242,5 +244,11 @@ class User extends Authenticatable
         $this->deleteReplies();
 
         parent::delete();
+    }
+
+    // override the default method, use markdown editor 
+    public function sendPasswordResetNotification($token)
+    {
+        Mail::to($this->email)->send(new ResetPasswordNotification($token));
     }
 }
